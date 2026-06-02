@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>MA - Filmes</title>
+    <link rel="icon" href="png/ma.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- LISTA -->
+<div class="lista-filmes">
+
+    <button onclick="trocarFilme('https://streamtape.com/v/Xdzr10jGbaTDeAD/Advogado_do_Diabo.mp4')">
+        Advogado do Diabo
+    </button>
+
+    <button onclick="trocarFilme('https://streamtape.com/v/gqPwPjxwJVT9bR/O_sol_e%CC%81_para_todos.mp4')">
+        O Sol é para Todos
+    </button>
+
+    <button onclick="trocarFilme('https://streamtape.com/v/9lW0yY36xdhadko/Armas_Sobre_a_Mesa.mp4')">
+        Armas Sobre a Mesa
+    </button>
+
+    <button onclick="trocarFilme('https://streamtape.com/v/llQGbQrk4jTaRl/Um_Contratempo.mp4')">
+        Um Contra Tempo
+    </button>
+
+    <button onclick="trocarFilme('https://streamtape.com/v/8KlvmPwvvZFoKYB/Um_Crime_de_Mestre.mp4')">
+        Um Crime de Mestre
+    </button>
+
+    <button onclick="trocarFilme('https://streamtape.com/v/RjJ4m6G9XMfxRJ/Human_Contract.avi')">
+        Human Contract
+    </button>
+
+    <button onclick="trocarFilme('https://streamtape.com/v/MXKLoOyrb8hwwM/12_Feet_Deep.mp4')">
+        12 Feet Deep
+    </button>
+
+</div>
+
+<!-- PLAYER -->
+<div class="player-area">
+    <iframe id="player" src="" allowfullscreen></iframe>
+</div>
+
+<script>
+function trocarFilme(link){
+    document.getElementById("player").src = link;
+}
+</script>
+
+</body>
+</html>
