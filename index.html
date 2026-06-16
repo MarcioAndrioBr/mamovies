@@ -2,55 +2,105 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <title>MA - Filmes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MA Movies</title>
     <link rel="icon" href="png/ma.png">
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<!-- LISTA -->
-<div class="lista-filmes">
+<header>
+    <div class="logo">MA<span>movies</span></div>
+    <span id="titulo-tocando">Selecione um filme para começar</span>
+</header>
 
-    <button onclick="trocarFilme('https://streamtape.com/v/Xdzr10jGbaTDeAD/Advogado_do_Diabo.mp4')">
-        Advogado do Diabo
-    </button>
+<div class="main">
 
-    <button onclick="trocarFilme('https://streamtape.com/v/gqPwPjxwJVT9bR/O_sol_e%CC%81_para_todos.mp4')">
-        O Sol é para Todos
-    </button>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Filmes</h2>
+            <div class="busca-wrapper">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input type="text" id="busca" placeholder="Pesquisar filme..." oninput="filtrarFilmes()" autocomplete="off">
+            </div>
+        </div>
 
-    <button onclick="trocarFilme('https://streamtape.com/v/9lW0yY36xdhadko/Armas_Sobre_a_Mesa.mp4')">
-        Armas Sobre a Mesa
-    </button>
+        <div class="lista-filmes" id="listaFilmes">
+            <!-- cards gerados pelo JS -->
+        </div>
+        <p class="nenhum-resultado" id="semResultado">Nenhum filme encontrado</p>
+    </aside>
 
-    <button onclick="trocarFilme('https://streamtape.com/v/llQGbQrk4jTaRl/Um_Contratempo.mp4')">
-        Um Contra Tempo
-    </button>
+    <!-- PLAYER -->
+    <div class="player-area">
+        <div class="player-placeholder" id="placeholder">
+            <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                <circle cx="12" cy="12" r="10"/>
+                <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/>
+            </svg>
+            <p>Escolha um filme na lista</p>
+        </div>
+        <iframe id="player" allowfullscreen></iframe>
+    </div>
 
-    <button onclick="trocarFilme('https://streamtape.com/v/8KlvmPwvvZFoKYB/Um_Crime_de_Mestre.mp4')">
-        Um Crime de Mestre
-    </button>
-
-    <button onclick="trocarFilme('https://streamtape.com/v/RjJ4m6G9XMfxRJ/Human_Contract.avi')">
-        Human Contract
-    </button>
-
-    <button onclick="trocarFilme('https://streamtape.com/v/MXKLoOyrb8hwwM/12_Feet_Deep.mp4')">
-        12 Feet Deep
-    </button>
-
-</div>
-
-<!-- PLAYER -->
-<div class="player-area">
-    <iframe id="player" src="" allowfullscreen></iframe>
 </div>
 
 <script>
-function trocarFilme(link){
-    document.getElementById("player").src = link;
+const filmes = [
+    { titulo: "Advogado do Diabo",   emoji: "⚖️", url: "https://streamtape.com/v/Xdzr10jGbaTDeAD/Advogado_do_Diabo.mp4" },
+    { titulo: "O Sol é para Todos",  emoji: "☀️", url: "https://streamtape.com/v/gqPwPjxwJVT9bR/O_sol_e%CC%81_para_todos.mp4" },
+    { titulo: "Armas Sobre a Mesa",  emoji: "🔫", url: "https://streamtape.com/v/9lW0yY36xdhadko/Armas_Sobre_a_Mesa.mp4" },
+    { titulo: "Um Contra Tempo",     emoji: "⏳", url: "https://streamtape.com/v/llQGbQrk4jTaRl/Um_Contratempo.mp4" },
+    { titulo: "Um Crime de Mestre",  emoji: "🎭", url: "https://streamtape.com/v/8KlvmPwvvZFoKYB/Um_Crime_de_Mestre.mp4" },
+    { titulo: "Human Contract",      emoji: "🤝", url: "https://streamtape.com/v/RjJ4m6G9XMfxRJ/Human_Contract.avi" },
+    { titulo: "12 Feet Deep",        emoji: "🏊", url: "https://streamtape.com/v/MXKLoOyrb8hwwM/12_Feet_Deep.mp4" },
+];
+
+let ativoIndex = -1;
+
+function renderCards(lista) {
+    const container = document.getElementById('listaFilmes');
+    container.innerHTML = '';
+    lista.forEach(({ titulo, emoji, url, index }) => {
+        const card = document.createElement('button');
+        card.className = 'card-filme' + (index === ativoIndex ? ' ativo' : '');
+        card.innerHTML = `
+            <div class="card-icone">${emoji}</div>
+            <div class="card-info">
+                <div class="card-titulo">${titulo}</div>
+            </div>
+            <span class="card-play">▶</span>
+        `;
+        card.onclick = () => tocarFilme(index);
+        container.appendChild(card);
+    });
 }
+
+function tocarFilme(index) {
+    ativoIndex = index;
+    const filme = filmes[index];
+    document.getElementById('player').src = filme.url;
+    document.getElementById('player').style.display = 'block';
+    document.getElementById('placeholder').style.display = 'none';
+    const titulo = document.getElementById('titulo-tocando');
+    titulo.textContent = '▶  ' + filme.titulo;
+    titulo.classList.add('ativo');
+    filtrarFilmes();
+}
+
+function filtrarFilmes() {
+    const q = document.getElementById('busca').value.toLowerCase().trim();
+    const filtrados = filmes
+        .map((f, i) => ({ ...f, index: i }))
+        .filter(f => f.titulo.toLowerCase().includes(q));
+    renderCards(filtrados);
+    document.getElementById('semResultado').style.display = filtrados.length === 0 ? 'block' : 'none';
+}
+
+filtrarFilmes();
 </script>
 
 </body>
